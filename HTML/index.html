@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIS Portal Login</title>
+    <link rel="stylesheet" href="/CSS/style.css">
+   
+</head>
+<body>
+
+    <!-- Left Side: Banner -->
+    <div class="left-section">
+        <img src="/Image/logo1.png" alt="">
+    </div>
+
+    <!-- Right Side: Login Form -->
+    <div class="right-section">
+        <div class="login-box">
+            <h2>Hello! Welcome Back.</h2>
+            <p>Please use your official email ID and password.</p>
+            
+            <form onsubmit="return loginUser()">
+                <div class="input-group">
+                    <label>Email ID</label>
+                    <input type="email" id="email" placeholder="Enter your email" required>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+
+                <!-- Captcha -->
+                 
+                <div class="captcha-box mb-4">
+                    <span id="captchaCode" class="font-bold text-lg text-blue-700"></span>
+                    <button id="refreshCaptcha" class="ml-2 text-blue-600">&#8634;</button>
+                    <input type="text" id="captchaInput" class="border ml-2 p-2 w-1/2" placeholder="Enter captcha">
+                </div>
+                
+                <!-- Error Message Display -->
+                <div id="message"></div>
+
+                <button type="submit" class="login-btn">LOG IN</button>
+            </form>
+
+            <p class="support-text">For login issues, please contact IT Support 👉 <a href="#">here</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Sample multiple user credentials (can be stored in a database)
+        const users = [
+            { email: "bikram.das@geomaticx.com", password: "123" },
+            { email: "user2@example.com", password: "pass456" },
+            { email: "admin@example.com", password: "admin789" }
+        ];
+
+        // Function to handle login.....
+function loginUser() {
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+    let captchaInput = document.getElementById('captchaInput').value;
+    let displayedCaptcha = document.getElementById('captchaCode').textContent;
+    let message = document.getElementById("message");
+
+    // Check if entered email and password match any user
+    let validUser = users.find(user => user.email === email && user.password === password);
+
+    if (!validUser) {
+        message.innerHTML = "Invalid Username or Password!";
+        message.style.color = "red";
+        return false;
+    }
+
+    // Check if Captcha is correct
+    if (captchaInput !== displayedCaptcha) {
+        message.innerHTML = "Captcha does not match. Please try again.";
+        message.style.color = "red";
+        refreshCaptcha();  // Generate a new captcha for retry
+        return false;  // Stop form submission
+    }
+
+    // If both login and captcha are correct
+    message.innerHTML = "Login Successful! Redirecting...";
+    message.style.color = "green";
+
+    // Simulate redirecting to another page
+    setTimeout(() => {
+        window.location.href = "main.html"; // Change this to the actual page
+    }, 2000);
+
+    return false; // Prevent form submission (page refresh)
+}
+
+        // For Capture Code----
+        function generateCaptcha() {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let captcha = '';
+            for (let i = 0; i < 6; i++) {
+                captcha += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return captcha;
+        }
+
+        function refreshCaptcha() {
+            const captchaElement = document.getElementById('captchaCode');
+            captchaElement.textContent = generateCaptcha();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial Captcha Generation
+            refreshCaptcha();
+
+            // Refresh Captcha when button is clicked
+            document.getElementById('refreshCaptcha').addEventListener('click', refreshCaptcha);
+
+            // Refresh Captcha when 'LOG IN' button is clicked
+            document.getElementById('loginButton').addEventListener('click', (e) => {
+                e.preventDefault();  // Prevent form submission
+                const captchaInput = document.getElementById('captchaInput').value;
+                const displayedCaptcha = document.getElementById('captchaCode').textContent;
+
+                if (captchaInput === displayedCaptcha) {
+                    alert('Captcha matched. Logging in...');
+                    refreshCaptcha(); // Generate new captcha for next time
+                } else {
+                    alert('Captcha does not match. Please try again.');
+                    refreshCaptcha(); // Generate new captcha to retry
+                }
+            });
+        });
+
+        
+    </script>
+
+</body>
+</html>

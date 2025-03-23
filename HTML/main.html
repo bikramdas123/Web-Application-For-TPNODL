@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAKSHA Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <link rel="stylesheet" href="/CSS/stylemain.css">
+</head>
+
+<body class="bg-gray-100">
+    <div class="container mx-auto p-4">
+        <!-- Header Section -->
+        <div class="header-container">
+            <div>
+                <h1 class="text-3xl font-bold text-blue-700">TPNODL</h1>
+                <p>TP Northern Odisha Distribution Limited</p>
+            </div>
+            <h2 class="text-3xl font-bold text-blue-600">NAKSHA</h2>
+            <div class="text-right">
+                <button class="bg-blue-500 text-white py-1 px-3 rounded mb-1">User Name</button><br>
+                <button class="bg-blue-500 text-white py-1 px-3 rounded">Help Desk: 9124960197</button>
+            </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="flex justify-center mb-4">
+            <button id="pdfButton" class="orange-btn">PDF</button>
+            <button class="orange-btn">KML</button>
+            <button id="cymeButton" class="orange-btn">CYME</button>
+            <button class="orange-btn">PSS SLD</button>
+            <button class="orange-btn">Feeder Schema</button>
+            <button class="orange-btn">Consumer</button>
+        </div>
+           
+            <!-- Dashboard Info Area -->
+        <div class="dashboard-box">
+            <h3 class="text-xl font-bold">Dashboard of Consumers – DT’s</h3><br> 
+        </div>
+        <div>
+        <img class="image-box" src="/Image/logo2.jpg" alt="logo2">
+        </div>
+         
+
+        <!-- Modal for Feeder Code Input -->
+        <div id="feederModal" class="modal hidden">
+            <div class="modal-content">
+                <h2 class="text-xl font-bold mb-4">Enter Feeder Code</h2>
+                <input type="text" id="feederCodeInput" class="border border-gray-300 p-2 mb-4 w-full" placeholder="Enter Feeder Code">
+                <button id="checkCodeButton" class="orange-btn mb-2">Submit</button>
+                <div id="message" class="mb-4"></div>
+                <button id="viewButton" class="orange-btn hidden">View PDF</button>
+                <button id="downloadButton" class="orange-btn hidden">Download PDF</button>
+                <button id="closeModalButton" class="orange-btn mt-4">Close</button>
+            </div>
+        </div>
+    </div>
+
+   <!-- Script for PDF Button -->
+    <script>
+        const pdfButton = document.getElementById('pdfButton');
+        const feederModal = document.getElementById('feederModal');
+        const checkCodeButton = document.getElementById('checkCodeButton');
+        const closeModalButton = document.getElementById('closeModalButton');
+        const viewButton = document.getElementById('viewButton');
+        const downloadButton = document.getElementById('downloadButton');
+        const feederCodeInput = document.getElementById('feederCodeInput');
+        const message = document.getElementById('message');
+
+        // Assuming your PDFs are in the 'pdfs' folder
+        const pdfFolder = './Feeder_wise_pdf/';
+
+        pdfButton.addEventListener('click', () => {
+            feederModal.classList.remove('hidden');
+            message.textContent = ''; 
+            feederCodeInput.value = ''; 
+            viewButton.classList.add('hidden');
+            downloadButton.classList.add('hidden');
+        });
+
+        checkCodeButton.addEventListener('click', () => {
+            const enteredCode = feederCodeInput.value.trim();
+            const pdfFileName = `${enteredCode}.pdf`;  // The file name is assumed to be like '12345.pdf'
+            const fileUrl = `${pdfFolder}${pdfFileName}`;
+
+            // Check if file exists by trying to load it (this won't work locally but will work on a server)
+            fetch(fileUrl, { method: 'HEAD' })
+                .then(response => {
+                    if (response.ok) {
+                        message.textContent = `Feeder Code matched! You can view or download the file "${pdfFileName}".`;
+                        message.style.color = 'green';
+
+                        viewButton.classList.remove('hidden');
+                        downloadButton.classList.remove('hidden');
+
+                        // View PDF
+                        viewButton.onclick = () => window.open(fileUrl, '_blank');
+                        
+                        // Download PDF
+                        downloadButton.onclick = () => {
+                            const downloadLink = document.createElement('a');
+                            downloadLink.href = fileUrl;
+                            downloadLink.download = pdfFileName;
+                            downloadLink.click();
+                        };
+                    } else {
+                        message.textContent = 'Invalid Feeder Code.';
+                        message.style.color = 'red';
+
+                        viewButton.classList.add('hidden');
+                        downloadButton.classList.add('hidden');
+                    }
+                })
+                .catch(() => {
+                    message.textContent = 'Error checking the file. Please try again later.';
+                    message.style.color = 'red';
+                });
+        });
+
+        closeModalButton.addEventListener('click', () => {
+            feederModal.classList.add('hidden');
+        });
+    </script>
+
+    <!-- Code for CYME Button -->
+     <!-- Modal for Feeder Code Input -->
+     <div id="feederModal1" class="modal hidden">
+        <div class="modal-content">
+            <h2 class="text-xl font-bold mb-4">Enter Feeder Code</h2>
+            <input type="text" id="feederCodeInput1" class="border border-gray-300 p-2 mb-4 w-full" placeholder="Enter Feeder Code">
+            <button id="checkCodeButton1" class="orange-btn mb-2">Submit</button>
+            <div id="message1" class="mb-4"></div>
+            <button id="downloadButton1" class="orange-btn hidden">Download File</button>
+            <button id="closeModalButton1" class="orange-btn mt-4">Close</button>
+        </div>
+    </div>
+    <script>
+        // Button References
+        const cymeButton = document.getElementById('cymeButton');
+        const feederModal1 = document.getElementById('feederModal1');
+        const checkCodeButton1 = document.getElementById('checkCodeButton1');
+        const closeModalButton1 = document.getElementById('closeModalButton1');
+        const downloadButton1 = document.getElementById('downloadButton1');
+        const feederCodeInput1 = document.getElementById('feederCodeInput1');
+        const message1 = document.getElementById('message1');
+
+        // Folder Containing Files
+        const fileFolder = './FW_CYME_EXTRACTION/';
+
+        // Open Feeder Code Modal
+        cymeButton.addEventListener('click', () => {
+            feederModal1.classList.remove('hidden');
+            message1.textContent = '';  // Clear previous messages
+            feederCodeInput1.value = ''; // Clear previous input
+            downloadButton1.classList.add('hidden');
+        });
+
+        // Handle Code Submission
+        checkCodeButton1.addEventListener('click', () => {
+            const enteredCode = feederCodeInput1.value.trim();
+            const zipFile = `${enteredCode}.zip`;
+            const rarFile = `${enteredCode}.rar`;
+
+            const zipUrl = `${fileFolder}${zipFile}`;
+            const rarUrl = `${fileFolder}${rarFile}`;
+
+            // Check if ZIP or RAR file exists
+            fetch(zipUrl, { method: 'HEAD' })
+                .then(response => {
+                    if (response.ok) {
+                        handleFileFound(zipUrl, zipFile);
+                    } else {
+                        return fetch(rarUrl, { method: 'HEAD' });
+                    }
+                })
+                .then(response => {
+                    if (response && response.ok) {
+                        handleFileFound(rarUrl, rarFile);
+                    } else {
+                        showErrorMessage('Invalid Feeder Code.');
+                    }
+                })
+                .catch(() => showErrorMessage('Error checking the file. Please try again later.'));
+        });
+
+        // Handle File Found
+        function handleFileFound(fileUrl, fileName) {
+            message1.textContent = `Feeder Code matched!`;
+            message1.style.color = 'green';
+            downloadButton1.classList.remove('hidden');
+
+            downloadButton1.onclick = () => {
+                const downloadLink = document.createElement('a');
+                downloadLink.href = fileUrl;
+                downloadLink.download = fileName;
+                downloadLink.click();
+            };
+        }
+
+        // Display Error Message
+        function showErrorMessage(text) {
+            message1.textContent = text;
+            message1.style.color = 'red';
+            downloadButton1.classList.add('hidden');
+        }
+
+        // Close Modal
+        closeModalButton1.addEventListener('click', () => {
+            feederModal1.classList.add('hidden');
+        });
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NAKSHA Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        #map {
+            height: 600px;
+            width: 100%;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyADH7Jy6F6NyoA1AXhjXZ0ZtW068YssnCk"></script>
+    <script>
+        let map;
+        function initMap() {
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: 20.9517, lng: 85.0985 }, // Odisha, India
+                zoom: 8,
+            });
+        }
+        function loadKML(url) {
+            const kmlLayer = new google.maps.KmlLayer({
+                url: url,
+                map: map
+            });
+        }
+    </script>
+</head>
+<body onload="initMap()">
+    <div id="map"></div>
+</body>
+</html>
